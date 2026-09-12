@@ -4,14 +4,7 @@ import Layout from "./components/Layout";
 import CakeShop from "./components/CakeShop";
 
 const App = () => {
-  return (
-    <Layout>
-      <CakeShop />
-      <div></div>
-      {/* <Todos />
-      <Users /> */}
-    </Layout>
-  );
+  return <CakeShop />;
 };
 
 export default App;
