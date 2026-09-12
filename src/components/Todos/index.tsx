@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./index.css";
 import { StoreState } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
-import { addTodo, deleteTodo } from "../../redux/slice";
+import { addTodo, deleteTodo } from "../../redux/slices/todos.slice";
 
 const Todos = () => {
   const [input, setInput] = useState("");

@@ -4,9 +4,20 @@ export type Todo = {
   completed: boolean;
 };
 
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
 export type StoreState = {
   todosStore: {
     todos: Todo[];
     total: number;
+  };
+  usersStore: {
+    users: User[];
+    isLoading: boolean;
+    error: string | null;
   };
 };
