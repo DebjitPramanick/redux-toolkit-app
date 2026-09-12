@@ -3,9 +3,9 @@ import { Bank, Transaction, TransactionCreate } from "../../types";
 import { createTransaction, getTransactions } from "../../api";
 
 export const fetchTransactions = createAsyncThunk(
-  "bank/fetchBank",
-  async () => {
-    const transactions = await getTransactions();
+  "bank/fetchTransactions",
+  async (shopId: number) => {
+    const transactions = await getTransactions(shopId);
     return transactions;
   },
 );
@@ -29,21 +29,27 @@ export const transactionsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchTransactions.fulfilled, (state, action) => {
       state.data = action.payload;
+      state.isLoading = false;
     });
     builder.addCase(fetchTransactions.rejected, (state, action) => {
       state.error = action.error.message;
+      state.isLoading = false;
     });
     builder.addCase(fetchTransactions.pending, (state) => {
       state.isLoading = true;
+      state.error = undefined;
     });
     builder.addCase(addTransaction.fulfilled, (state, action) => {
       state.data.push(action.payload);
+      state.isLoading = false;
     });
     builder.addCase(addTransaction.rejected, (state, action) => {
       state.error = action.error.message;
+      state.isLoading = false;
     });
     builder.addCase(addTransaction.pending, (state) => {
       state.isLoading = true;
+      state.error = undefined;
     });
   },
 });

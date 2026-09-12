@@ -1,19 +1,11 @@
 import { supabase } from "../lib/supabase";
-import { Inventory, InventoryCreate, InventoryUpdate } from "../types";
+import { Inventory, InventoryUpdate } from "../types";
 
-export const getInventory = async (): Promise<Inventory[]> => {
-  const { data, error } = await supabase.from("Inventory").select("*");
-  if (error) throw error;
-  return data;
-};
-
-export const createInventory = async (
-  inventory: InventoryCreate,
-): Promise<Inventory> => {
+export const getInventory = async (shopId: number): Promise<Inventory> => {
   const { data, error } = await supabase
     .from("Inventory")
-    .insert(inventory)
-    .select()
+    .select("*")
+    .eq("shop_id", shopId)
     .single();
   if (error) throw error;
   return data;

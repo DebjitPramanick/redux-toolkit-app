@@ -7,6 +7,16 @@ export const getBank = async (): Promise<Bank[]> => {
   return data;
 };
 
+export const getBankByShopId = async (shopId: number): Promise<Bank> => {
+  const { data, error } = await supabase
+    .from("Bank")
+    .select("*")
+    .eq("shop_id", shopId)
+    .single();
+  if (error) throw error;
+  return data;
+};
+
 export const createBank = async (bank: BankCreate): Promise<Bank> => {
   const { data, error } = await supabase
     .from("Bank")

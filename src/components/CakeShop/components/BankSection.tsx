@@ -1,4 +1,33 @@
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { fetchBank } from "../../../redux/slices/bank.slice";
+import { fetchTransactions } from "../../../redux/slices/transactions.slice";
+
 export default function BankSection() {
+  const { selectedShop } = useAppSelector((state) => state.shops);
+  const dispatch = useAppDispatch();
+
+  const {
+    data: bank,
+    isLoading: isBankLoading,
+    error: bankError,
+  } = useAppSelector((state) => state.bank);
+
+  const {
+    data: transactions,
+    isLoading: isTransactionsLoading,
+    error: transactionsError,
+  } = useAppSelector((state) => state.transactions);
+
+  useEffect(() => {
+    if (selectedShop) {
+      dispatch(fetchBank(selectedShop.id));
+      dispatch(fetchTransactions(selectedShop.id));
+    }
+  }, [selectedShop]);
+
+  const latestTransaction = transactions?.[0];
+
   return (
     <section className="card bank-card">
       <div className="card-heading">
@@ -11,16 +40,21 @@ export default function BankSection() {
 
       <div className="bank-balance">
         <span>Available balance</span>
-        <strong>₹ 1,24,500</strong>
+        <strong>
+          {isBankLoading ? "Loading..." : `₹ ${bank?.balance ?? 0}`}
+        </strong>
       </div>
 
       <div className="bank-grid">
         <div>
           <span>Last transaction</span>
-          <strong>₹ 8,400</strong>
+          <strong>
+            {isTransactionsLoading
+              ? "Loading..."
+              : `₹ ${latestTransaction?.amount ?? 0}`}
+          </strong>
         </div>
       </div>
-      {/* Add bank transaction, fetch balance and transaction history here. */}
     </section>
   );
 }

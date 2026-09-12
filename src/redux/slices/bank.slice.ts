@@ -1,11 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Bank, BankUpdate } from "../../types";
-import { getBank, updateBank } from "../../api";
+import { getBankByShopId, updateBank } from "../../api";
 
-export const fetchBank = createAsyncThunk("bank/fetchBank", async () => {
-  const bank = await getBank();
-  return bank;
-});
+export const fetchBank = createAsyncThunk(
+  "bank/fetchBank",
+  async (shopId: number) => {
+    const bank = await getBankByShopId(shopId);
+    return bank;
+  },
+);
 
 export const modifyBank = createAsyncThunk(
   "bank/modifyBank",
@@ -18,7 +21,7 @@ export const modifyBank = createAsyncThunk(
 export const bankSlice = createSlice({
   name: "bank",
   initialState: {
-    data: [] as Bank[],
+    data: null as Bank | null,
     error: undefined as string | undefined,
     isLoading: false,
   },
@@ -26,21 +29,27 @@ export const bankSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchBank.fulfilled, (state, action) => {
       state.data = action.payload;
+      state.isLoading = false;
     });
     builder.addCase(fetchBank.rejected, (state, action) => {
       state.error = action.error.message;
+      state.isLoading = false;
     });
     builder.addCase(fetchBank.pending, (state) => {
       state.isLoading = true;
+      state.error = undefined;
     });
     builder.addCase(modifyBank.fulfilled, (state, action) => {
-      state.data.push(action.payload);
+      state.data = action.payload;
+      state.isLoading = false;
     });
     builder.addCase(modifyBank.rejected, (state, action) => {
       state.error = action.error.message;
+      state.isLoading = false;
     });
     builder.addCase(modifyBank.pending, (state) => {
       state.isLoading = true;
+      state.error = undefined;
     });
   },
 });

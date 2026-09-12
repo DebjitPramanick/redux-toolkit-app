@@ -53,10 +53,12 @@ export type InventoryUpdate = {
 
 export type Bank = {
   id: number;
+  shop_id: number;
   balance: number;
 };
 
 export type BankCreate = {
+  shop_id: number;
   balance: number;
 };
 
@@ -96,16 +98,18 @@ export type StoreState = {
   };
   customers: {
     data: Customer[];
+    selectedCustomer: Customer | null;
     isLoading: boolean;
     error: string | null;
   };
   shops: {
     data: Shop[];
+    selectedShop: Shop | null;
     isLoading: boolean;
     error: string | null;
   };
-  banks: {
-    data: Bank[];
+  bank: {
+    data: Bank;
     isLoading: boolean;
     error: string | null;
   };
@@ -115,7 +119,7 @@ export type StoreState = {
     error: string | null;
   };
   inventory: {
-    data: Inventory[];
+    data: Inventory | null;
     isLoading: boolean;
     error: string | null;
   };

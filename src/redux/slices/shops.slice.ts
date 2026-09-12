@@ -13,19 +13,28 @@ export const shopsSlice = createSlice({
     data: [] as Shop[],
     error: undefined as string | undefined,
     isLoading: false,
+    selectedShop: null as Shop | null,
   },
-  reducers: {},
+  reducers: {
+    selectShop: (state, action: PayloadAction<Shop>) => {
+      state.selectedShop = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchShops.fulfilled, (state, action) => {
       state.data = action.payload;
+      state.isLoading = false;
     });
     builder.addCase(fetchShops.rejected, (state, action) => {
       state.error = action.error.message;
+      state.isLoading = false;
     });
     builder.addCase(fetchShops.pending, (state) => {
       state.isLoading = true;
+      state.error = undefined;
     });
   },
 });
 
 export const shopsReducer = shopsSlice.reducer;
+export const { selectShop } = shopsSlice.actions;
