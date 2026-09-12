@@ -1,7 +1,7 @@
 import { supabase } from "../lib/supabase";
 import { Shop, ShopCreate, ShopUpdate } from "../types";
 
-export const getShops = async () => {
+export const getShops = async (): Promise<Shop[]> => {
   const { data, error } = await supabase.from("Shop").select("*");
   if (error) throw error;
   return data;

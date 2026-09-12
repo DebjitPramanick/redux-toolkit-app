@@ -94,4 +94,29 @@ export type StoreState = {
     isLoading: boolean;
     error: string | null;
   };
+  customers: {
+    data: Customer[];
+    isLoading: boolean;
+    error: string | null;
+  };
+  shops: {
+    data: Shop[];
+    isLoading: boolean;
+    error: string | null;
+  };
+  banks: {
+    data: Bank[];
+    isLoading: boolean;
+    error: string | null;
+  };
+  transactions: {
+    data: Transaction[];
+    isLoading: boolean;
+    error: string | null;
+  };
+  inventory: {
+    data: Inventory[];
+    isLoading: boolean;
+    error: string | null;
+  };
 };
