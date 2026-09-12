@@ -8,7 +8,8 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "noEmit": false
+    "noEmit": false,
+    "types": ["node"]
   },
   "include": ["src"]
 }
