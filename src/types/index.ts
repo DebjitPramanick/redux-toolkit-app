@@ -10,6 +10,80 @@ export type User = {
   email: string;
 };
 
+export type Shop = {
+  id: number;
+  name: string;
+};
+
+export type ShopCreate = {
+  name: string;
+};
+
+export type ShopUpdate = {
+  name: string;
+};
+
+export type Customer = {
+  id: number;
+  name: string;
+};
+
+export type CustomerCreate = {
+  name: string;
+};
+
+export type CustomerUpdate = {
+  name: string;
+};
+
+export type Inventory = {
+  id: number;
+  shop_id: number;
+  cake_count: number;
+};
+
+export type InventoryCreate = {
+  shop_id: number;
+  cake_count: number;
+};
+
+export type InventoryUpdate = {
+  cake_count: number;
+};
+
+export type Bank = {
+  id: number;
+  balance: number;
+};
+
+export type BankCreate = {
+  balance: number;
+};
+
+export type BankUpdate = {
+  balance: number;
+};
+
+export type Transaction = {
+  id: number;
+  shop_id: number;
+  customer_id: number;
+  bank_id: number;
+  type: string;
+  amount: number;
+  created_at: string;
+};
+
+export type TransactionCreate = {
+  shop_id: number;
+  customer_id: number;
+  bank_id: number;
+  type: string;
+  amount: number;
+};
+
+export type TransactionType = "deposit" | "withdrawal";
+
 export type StoreState = {
   todosStore: {
     todos: Todo[];
