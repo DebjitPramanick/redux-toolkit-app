@@ -6,8 +6,19 @@ export const getTransactions = async (
 ): Promise<Transaction[]> => {
   const { data, error } = await supabase
     .from("Transaction")
-    .select("*")
-    .eq("shop_id", shopId);
+    .select(
+      `*,  
+      customer: Customer (
+        id,
+        name
+      ),
+      shop:Shop (
+        id,
+        name
+      )`,
+    )
+    .eq("shop_id", shopId)
+    .order("created_at", { ascending: false });
   if (error) throw error;
   return data;
 };

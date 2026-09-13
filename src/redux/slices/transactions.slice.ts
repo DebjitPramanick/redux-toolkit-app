@@ -1,6 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Bank, Transaction, TransactionCreate } from "../../types";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
+import { Bank, StoreState, Transaction, TransactionCreate } from "../../types";
 import { createTransaction, getTransactions } from "../../api";
+import { RootState } from "@reduxjs/toolkit/query";
 
 export const fetchTransactions = createAsyncThunk(
   "bank/fetchTransactions",
@@ -15,6 +20,45 @@ export const addTransaction = createAsyncThunk(
   async (transaction: TransactionCreate): Promise<Transaction> => {
     const newTransaction = await createTransaction(transaction);
     return newTransaction as Transaction;
+  },
+);
+
+export const selectTransactions = createSelector(
+  [
+    (state: StoreState) => state.transactions.data,
+    (
+      _state,
+      filters?: {
+        customerQuery?: string;
+        amountRange?: [number | null, number | null];
+      },
+    ) => filters,
+  ],
+  (transactions, filters) => {
+    if (!filters) {
+      return transactions;
+    }
+
+    const { customerQuery, amountRange } = filters;
+    let filteredTransactions = [...transactions];
+
+    if (customerQuery?.trim()) {
+      filteredTransactions = transactions.filter((transaction) =>
+        transaction.customer.name
+          .toLowerCase()
+          .includes(customerQuery.trim().toLowerCase()),
+      );
+    }
+    if (amountRange && amountRange.every((value) => !!value)) {
+      console.log(amountRange);
+      filteredTransactions = filteredTransactions.filter(
+        (transaction) =>
+          transaction.amount >= amountRange[0]! &&
+          transaction.amount <= amountRange[1]!,
+      );
+    }
+
+    return filteredTransactions;
   },
 );
 

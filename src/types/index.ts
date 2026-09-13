@@ -74,6 +74,8 @@ export type Transaction = {
   type: string;
   amount: number;
   created_at: string;
+  customer: Customer;
+  shop: Shop;
 };
 
 export type TransactionCreate = {
