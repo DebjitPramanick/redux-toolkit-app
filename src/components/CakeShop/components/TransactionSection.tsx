@@ -1,32 +1,12 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import {
-  BankUpdate,
-  InventoryUpdate,
-  TransactionCreate,
-  TransactionType,
-} from "../../../types";
-import {
-  addTransaction,
-  fetchTransactions,
-} from "../../../redux/slices/transactions.slice";
-import { fetchBank, modifyBank } from "../../../redux/slices/bank.slice";
-import {
-  fetchInventory,
-  modifyInventory,
-} from "../../../redux/slices/inventory.slice";
+import { sellCake } from "../../../redux/slices/shops.slice";
+import { SellCakePayload } from "../../../types";
 
 const CAKE_PRICE = 100;
 
-const TRANSACTION_TYPES: Record<string, TransactionType> = {
-  DEPOSIT: "deposit",
-  WITHDRAWAL: "withdrawal",
-};
-
 export default function TransactionSection() {
-  const { bank, customers, shops, inventory, transactions } = useAppSelector(
-    (state) => state,
-  );
+  const { customers, shops } = useAppSelector((state) => state);
 
   const dispatch = useAppDispatch();
 
@@ -35,41 +15,31 @@ export default function TransactionSection() {
 
   const selectedCustomer = customers.selectedCustomer;
   const selectedShop = shops.selectedShop;
-  const selectedBank = bank.data;
-  const selectedInventory = inventory.data;
+  const saleError = shops.errorSale;
 
   const handleCreateTransaction = async () => {
-    if (!selectedShop?.id || !selectedCustomer?.id || !selectedBank?.id) {
+    if (numberOfCakes <= 0) {
       return;
     }
-    const newInventory: InventoryUpdate = {
-      cake_count: (selectedInventory?.cake_count ?? 0) - numberOfCakes,
-    };
-    const newBank: BankUpdate = {
-      balance: (bank.data?.balance ?? 0) + totalAmount,
-    };
-    const newTransaction: TransactionCreate = {
-      shop_id: selectedShop?.id,
-      customer_id: selectedCustomer?.id,
-      bank_id: selectedBank?.id,
-      type: TRANSACTION_TYPES.DEPOSIT,
+    const totalAmount = numberOfCakes * CAKE_PRICE;
+    const sellCakePayload: SellCakePayload = {
+      cake_count: numberOfCakes,
       amount: totalAmount,
     };
-    console.log(newInventory, newBank, newTransaction);
     try {
-      await dispatch(modifyInventory([selectedShop?.id, newInventory]));
-      await dispatch(modifyBank([bank.data?.id, newBank]));
-      await dispatch(addTransaction(newTransaction));
+      await dispatch(sellCake(sellCakePayload));
       setNumberOfCakes(0);
     } catch (error) {
+      console.log(error);
       setErrorMessage(
         error instanceof Error ? error.message : "Failed to create transaction",
       );
     }
   };
 
-  const isLoading =
-    inventory.isLoading || bank.isLoading || transactions.isLoading;
+  console.log(errorMessage);
+
+  const isLoading = shops.isProcessingSale;
 
   const totalAmount = numberOfCakes * CAKE_PRICE;
 
@@ -117,6 +87,10 @@ export default function TransactionSection() {
       >
         {isLoading ? "Creating transaction..." : "Create transaction"}
       </button>
+
+      {(saleError || errorMessage) && (
+        <div className="error-message">{saleError || errorMessage}</div>
+      )}
     </section>
   );
 }

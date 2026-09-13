@@ -7,17 +7,12 @@ export default function BankSection() {
   const { selectedShop } = useAppSelector((state) => state.shops);
   const dispatch = useAppDispatch();
 
-  const {
-    data: bank,
-    isLoading: isBankLoading,
-    error: bankError,
-  } = useAppSelector((state) => state.bank);
+  const { data: bank, isLoading: isBankLoading } = useAppSelector(
+    (state) => state.bank,
+  );
 
-  const {
-    data: transactions,
-    isLoading: isTransactionsLoading,
-    error: transactionsError,
-  } = useAppSelector((state) => state.transactions);
+  const { data: transactions, isLoading: isTransactionsLoading } =
+    useAppSelector((state) => state.transactions);
 
   useEffect(() => {
     if (selectedShop) {
@@ -26,7 +21,7 @@ export default function BankSection() {
     }
   }, [selectedShop]);
 
-  const latestTransaction = transactions?.[0];
+  const latestTransaction = transactions?.[transactions.length - 1];
 
   return (
     <section className="card bank-card">

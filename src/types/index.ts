@@ -86,6 +86,11 @@ export type TransactionCreate = {
 
 export type TransactionType = "deposit" | "withdrawal";
 
+export type SellCakePayload = {
+  cake_count: number;
+  amount: number;
+};
+
 export type StoreState = {
   todosStore: {
     todos: Todo[];
@@ -107,6 +112,8 @@ export type StoreState = {
     selectedShop: Shop | null;
     isLoading: boolean;
     error: string | null;
+    isProcessingSale: boolean;
+    errorSale: string | null;
   };
   bank: {
     data: Bank;
