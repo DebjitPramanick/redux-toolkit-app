@@ -29,7 +29,18 @@ export const createTransaction = async (
   const { data, error } = await supabase
     .from("Transaction")
     .insert(transaction)
-    .select()
+    .select(
+      `
+      *,
+      customer: Customer (
+        id,
+        name
+      ),
+      shop:Shop (
+        id,
+        name
+      )`,
+    )
     .single();
   if (error) throw error;
   return data;

@@ -6,6 +6,10 @@ import { shopsReducer } from "./slices/shops.slice";
 import { bankReducer } from "./slices/bank.slice";
 import { inventoryReducer } from "./slices/inventory.slice";
 import { transactionsReducer } from "./slices/transactions.slice";
+import {
+  listenerMiddleware,
+  loggerMiddleware,
+} from "./middlewares/logger.middleware";
 
 export type AppDispatch = typeof store.dispatch;
 
@@ -19,6 +23,10 @@ const store = configureStore({
     inventory: inventoryReducer,
     transactions: transactionsReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware()
+      .prepend(listenerMiddleware.middleware)
+      .concat(loggerMiddleware),
 });
 
 export default store;

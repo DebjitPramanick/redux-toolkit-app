@@ -5,6 +5,7 @@ import {
   SellCakePayload,
   Shop,
   StoreState,
+  Transaction,
   TransactionCreate,
   TransactionType,
 } from "../../types";
@@ -12,6 +13,7 @@ import { getShops } from "../../api";
 import { modifyInventory } from "./inventory.slice";
 import { addTransaction } from "./transactions.slice";
 import { modifyBank } from "./bank.slice";
+import { listenerMiddleware } from "../middlewares/logger.middleware";
 
 const TRANSACTION_TYPES: Record<string, TransactionType> = {
   DEPOSIT: "deposit",
@@ -23,9 +25,12 @@ export const fetchShops = createAsyncThunk("shops/fetchShops", async () => {
   return shops;
 });
 
-export const sellCake = createAsyncThunk<void, SellCakePayload>(
+export const sellCake = createAsyncThunk<Transaction, SellCakePayload>(
   "shops/sellCake",
-  async (payload: SellCakePayload, { dispatch, getState }) => {
+  async (
+    payload: SellCakePayload,
+    { dispatch, getState },
+  ): Promise<Transaction> => {
     const { cake_count, amount } = payload;
     const { inventory, bank, customers, shops } = getState() as StoreState;
 
@@ -63,9 +68,19 @@ export const sellCake = createAsyncThunk<void, SellCakePayload>(
 
     await dispatch(modifyInventory([selectedInventory.id, newInventory]));
     await dispatch(modifyBank([selectedBank.id, newBank]));
-    await dispatch(addTransaction(newTransaction));
+    const result = (await dispatch(addTransaction(newTransaction)))
+      .payload as Transaction;
+
+    return result;
   },
 );
+
+listenerMiddleware.startListening({
+  actionCreator: sellCake.fulfilled,
+  effect: async (action) => {
+    console.log("Sold cake with transaction", action);
+  },
+});
 
 export const shopsSlice = createSlice({
   name: "shops",

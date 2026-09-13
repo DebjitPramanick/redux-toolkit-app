@@ -35,30 +35,32 @@ export const selectTransactions = createSelector(
     ) => filters,
   ],
   (transactions, filters) => {
-    if (!filters) {
-      return transactions;
-    }
-
-    const { customerQuery, amountRange } = filters;
     let filteredTransactions = [...transactions];
 
-    if (customerQuery?.trim()) {
-      filteredTransactions = transactions.filter((transaction) =>
-        transaction.customer.name
-          .toLowerCase()
-          .includes(customerQuery.trim().toLowerCase()),
-      );
-    }
-    if (amountRange && amountRange.every((value) => !!value)) {
-      console.log(amountRange);
-      filteredTransactions = filteredTransactions.filter(
-        (transaction) =>
-          transaction.amount >= amountRange[0]! &&
-          transaction.amount <= amountRange[1]!,
-      );
+    if (filters) {
+      const { customerQuery, amountRange } = filters;
+
+      if (customerQuery?.trim()) {
+        filteredTransactions = transactions.filter((transaction) =>
+          transaction.customer.name
+            .toLowerCase()
+            .includes(customerQuery.trim().toLowerCase()),
+        );
+      }
+      if (amountRange && amountRange.every((value) => !!value)) {
+        console.log(amountRange);
+        filteredTransactions = filteredTransactions.filter(
+          (transaction) =>
+            transaction.amount >= amountRange[0]! &&
+            transaction.amount <= amountRange[1]!,
+        );
+      }
     }
 
-    return filteredTransactions;
+    return filteredTransactions.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
   },
 );
 
